@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "ipython",
     "jupyterlab",
+    "kagglehub>=1.0.2",
     "loguru",
     "matplotlib",
     "notebook",

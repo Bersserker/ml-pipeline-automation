@@ -6,6 +6,30 @@
 
 Default of Credit Card
 
+## Шпаргалка: окружение и загрузка данных
+
+Запускайте команды из корня проекта. Нужны `uv` и Python 3.13;
+для команд `make` также нужен GNU Make.
+
+```bash
+# Установить зависимости из pyproject.toml через uv
+uv sync
+
+# Скачать датасет (uv автоматически подготовит окружение)
+make data
+
+# То же самое без Makefile
+uv run python -m src.data.make_dataset
+```
+
+Скрипт `src/data/make_dataset.py` загружает датасет
+`uciml/default-of-credit-card-clients-dataset` в `data/raw/UCI_Credit_Card.csv`.
+Если файл уже существует, повторная загрузка пропускается.
+Это загрузка исходных данных; обработка данных пока не реализована.
+
+Зависимость `kagglehub` указана в `pyproject.toml`, версии фиксируются в `uv.lock`.
+Для установки зависимостей также можно использовать `make requirements`.
+
 ## Project Organization
 
 ```
@@ -58,4 +82,3 @@ Default of Credit Card
 ```
 
 --------
-

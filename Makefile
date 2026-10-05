@@ -4,7 +4,7 @@
 
 PROJECT_NAME = ml-pipeline-automation
 PYTHON_VERSION = 3.13
-PYTHON_INTERPRETER = python
+PYTHON_INTERPRETER = python3
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -62,10 +62,10 @@ create_environment:
 #################################################################################
 
 
-## Make dataset
+## Download credit scoring dataset using uv
 .PHONY: data
-data: requirements
-	$(PYTHON_INTERPRETER) ml_pipeline_automation/dataset.py
+data:
+	uv run python -m src.data.make_dataset
 
 
 #################################################################################
