@@ -1,0 +1,1 @@
+"""Credit scoring project module."""

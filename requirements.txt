@@ -1,0 +1,8 @@
+# Project dependencies from pyproject.toml.
+-e .
+
+# Credit scoring infrastructure.
+fastapi
+uvicorn
+great-expectations
+dvc
