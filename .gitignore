@@ -1,6 +1,9 @@
 # Data
 /data/
 
+# Local MLflow database and artifacts
+/artifacts/mlflow/
+
 # Mac OS-specific storage files
 .DS_Store
 
@@ -189,4 +192,3 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
-

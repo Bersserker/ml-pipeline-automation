@@ -30,6 +30,49 @@ uv run python -m src.data.make_dataset
 Зависимость `kagglehub` указана в `pyproject.toml`, версии фиксируются в `uv.lock`.
 Для установки зависимостей также можно использовать `make requirements`.
 
+## Запуск проекта
+
+```bash
+make requirements  # Установить зависимости
+make run           # Запустить FastAPI на http://127.0.0.1:8000
+# Или make dev для автоматической перезагрузки при изменении кода
+```
+
+Документация API: http://127.0.0.1:8000/docs. Сейчас приложение содержит
+каркас FastAPI; endpoints для скоринга ещё не реализованы.
+Остановка — `Ctrl+C`. Другой порт: `make run APP_PORT=8001`.
+
+## MLflow и обучение
+
+Запустите интерфейс и tracking server из корня проекта:
+
+```bash
+make mlflow
+# Синонимы: make mlflow-ui или make mlflow-server
+```
+
+Откройте http://127.0.0.1:5000. Сервер работает до нажатия `Ctrl+C`.
+База SQLite и артефакты сохраняются в `artifacts/mlflow/`.
+
+В другом терминале запустите обучение с логированием на этот сервер:
+
+```bash
+make train
+```
+
+Для другого порта используйте одинаковое значение в обоих терминалах:
+
+```bash
+make mlflow MLFLOW_PORT=5001
+make train MLFLOW_PORT=5001
+```
+
+Для уже запущенного удалённого сервера:
+
+```bash
+make train MLFLOW_TRACKING_URI=http://your-server:5000
+```
+
 ## Project Organization
 
 ```
