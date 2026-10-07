@@ -27,3 +27,6 @@ jobs:
 
       - name: Lint with Flake8
         run: flake8 src tests
+
+      - name: Validate data with Great Expectations
+        run: uv run python scripts/validate_gx.py

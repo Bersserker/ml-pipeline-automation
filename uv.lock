@@ -96,6 +96,22 @@ wheels = [
 ]
 
 [[package]]
+name = "altair"
+version = "6.3.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "jinja2" },
+    { name = "jsonschema" },
+    { name = "narwhals" },
+    { name = "packaging" },
+    { name = "typing-extensions" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/e8/de/9731304fae332b5783fdc3ed18531dfaf4a3cc62a66aaaa74c047355b70f/altair-6.3.0.tar.gz", hash = "sha256:fa632121aca6d0fcb198a3d8a9f7d937fa5b7518ec947951cfffb44e736d97c8", size = 766362, upload-time = "2026-09-15T06:38:03.623Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ca/b9/10a8bb13a0462e0bc4e02c0b7b8237dc24ab590f5bb4be94bec5e8f1d532/altair-6.3.0-py3-none-any.whl", hash = "sha256:7defb6ca730676dfc99a299768e2769f51585fcb3dc960ea71aacc368929d65e", size = 797192, upload-time = "2026-09-15T06:38:01.791Z" },
+]
+
+[[package]]
 name = "amqp"
 version = "5.4.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1195,6 +1211,35 @@ wheels = [
 ]
 
 [[package]]
+name = "great-expectations"
+version = "1.24.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "altair" },
+    { name = "cryptography" },
+    { name = "jinja2" },
+    { name = "jsonschema" },
+    { name = "marshmallow" },
+    { name = "mistune" },
+    { name = "numpy" },
+    { name = "packaging" },
+    { name = "pandas" },
+    { name = "pydantic" },
+    { name = "pyparsing" },
+    { name = "python-dateutil" },
+    { name = "requests" },
+    { name = "ruamel-yaml" },
+    { name = "scipy" },
+    { name = "tqdm" },
+    { name = "typing-extensions" },
+    { name = "tzlocal" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/12/2a/9d37d570a049be27e32ff32b26ef9e4635ffba660fcbcf81c6bde025ad37/great_expectations-1.24.0.tar.gz", hash = "sha256:43959b92737516c51a62cc993cc5112fdf8ebbbf003cc20025b1c40ed88d7db8", size = 37080621, upload-time = "2026-10-07T13:14:49.472Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/dc/b3/cbaaf5521fb4afebc390cc4f8136cdca32f8d6ee162c5b67c17e4206fa15/great_expectations-1.24.0-py3-none-any.whl", hash = "sha256:72de361c45c4fa8d569b6c6d130738f2566571185bc6b4ee764d9a9541d8a1ee", size = 5745443, upload-time = "2026-10-07T13:14:46.049Z" },
+]
+
+[[package]]
 name = "gto"
 version = "1.10.1"
 source = { registry = "https://pypi.org/simple" }
@@ -1812,6 +1857,15 @@ wheels = [
 ]
 
 [[package]]
+name = "marshmallow"
+version = "4.3.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4e/d7/611e68d57e6a903c29cb33b5afec0f93b4baecacc6c6c62e33cde9eb9dcb/marshmallow-4.3.1.tar.gz", hash = "sha256:fb6b8048af08d4ab061610d5b7d3696a7e4c95337dbda880edb9f95812cabc20", size = 218308, upload-time = "2026-08-08T14:27:29.517Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/43/57/4526ca0e214a3d158690e3393f6d547a2f8070f88d6388ab21d5b0aac8a1/marshmallow-4.3.1-py3-none-any.whl", hash = "sha256:e65accfbe277546df92ed7996a678c90e063e9a7c2a2f5e03f7d0b90e3768c42", size = 49219, upload-time = "2026-08-08T14:27:28.078Z" },
+]
+
+[[package]]
 name = "matplotlib"
 version = "3.11.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1911,6 +1965,7 @@ dev = [
     { name = "black" },
     { name = "dvc" },
     { name = "flake8" },
+    { name = "great-expectations" },
 ]
 
 [package.metadata]
@@ -1945,6 +2000,7 @@ dev = [
     { name = "black", specifier = ">=26.10.0" },
     { name = "dvc", specifier = ">=3.67.1" },
     { name = "flake8", specifier = ">=7.4.1" },
+    { name = "great-expectations", specifier = ">=1.24.0" },
 ]
 
 [[package]]

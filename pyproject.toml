@@ -60,4 +60,5 @@ dev = [
     "black>=26.10.0",
     "dvc>=3.67.1",
     "flake8>=7.4.1",
+    "great-expectations>=1.24.0",
 ]
