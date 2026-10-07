@@ -1,2 +1,10 @@
-# Add stages after dataset preparation and training are implemented.
-stages: {}
+stages:
+  prepare:
+    cmd: uv run python -m src.data.prepare_dataset
+    deps:
+      - data/raw/UCI_Credit_Card.csv
+      - src/data/prepare_dataset.py
+      - src/data/clean_dataset.py
+      - src/data/validation.py
+    outs:
+      - data/processed
