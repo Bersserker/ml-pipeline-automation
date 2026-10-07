@@ -3,7 +3,6 @@ from pathlib import Path
 import great_expectations as gx
 import great_expectations.expectations as gxe
 
-
 DATA_PATH = Path("data/raw/UCI_Credit_Card.csv")
 
 
@@ -48,9 +47,7 @@ def main():
         suite=suite,
     )
 
-    validation_definition = context.validation_definitions.add(
-        validation_definition
-    )
+    validation_definition = context.validation_definitions.add(validation_definition)
 
     result = validation_definition.run()
 
