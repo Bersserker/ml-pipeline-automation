@@ -27,13 +27,13 @@ def main():
 
     suite.add_expectation(
         gxe.ExpectColumnValuesToNotBeNull(
-            column="age",
+            column="AGE",
         )
     )
 
     suite.add_expectation(
         gxe.ExpectColumnValuesToBeBetween(
-            column="age",
+            column="AGE",
             min_value=18,
             max_value=100,
         )
