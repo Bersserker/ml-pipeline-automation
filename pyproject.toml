@@ -16,7 +16,10 @@ classifiers = [
     
 ]
 dependencies = [
+    "black>=26.10.0",
+    "catboost>=1.2.10",
     "fastapi",
+    "flake8>=7.4.1",
     "ipython",
     "jupyterlab",
     "kagglehub>=1.0.2",
@@ -51,3 +54,10 @@ extend-select = ["I"]  # Add import sorting
 [tool.ruff.lint.isort]
 known-first-party = ["ml_pipeline_automation"]
 force-sort-within-sections = true
+
+[dependency-groups]
+dev = [
+    "black>=26.10.0",
+    "dvc>=3.67.1",
+    "flake8>=7.4.1",
+]

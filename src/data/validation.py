@@ -37,12 +37,12 @@ RAW_SCHEMA = pa.DataFrameSchema(
     },
     index=pa.Index("int64", nullable=False),
     coerce=True,
+    checks=pa.Check(lambda df: len(df) > 0, error="Dataset must not be empty"),
     strict=False,
     name="raw_credit_dataset",
 )
 
-# clean_dataset currently changes only column names and removes rows.
-# Renaming the schema preserves the source types and validation rules.
+# Renaming preserves source types and validation rules after cleaning.
 PROCESSED_SCHEMA = RAW_SCHEMA.rename_columns(
     {
         column: "default" if column == "default.payment.next.month" else column.lower()
@@ -50,3 +50,9 @@ PROCESSED_SCHEMA = RAW_SCHEMA.rename_columns(
     }
 )
 PROCESSED_SCHEMA.name = "processed_credit_dataset"
+PROCESSED_SCHEMA.checks = [
+    *PROCESSED_SCHEMA.checks,
+    pa.Check(
+        lambda df: not df.duplicated().any(), error="Duplicate rows must be removed"
+    ),
+]

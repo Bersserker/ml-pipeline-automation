@@ -12,7 +12,9 @@ MLFLOW_PORT ?= 5000
 MLFLOW_BACKEND_STORE_URI ?= sqlite:///artifacts/mlflow/mlflow.db
 MLFLOW_ARTIFACTS_DESTINATION ?= $(CURDIR)/artifacts/mlflow/mlartifacts
 MLFLOW_TRACKING_URI ?= http://127.0.0.1:$(MLFLOW_PORT)
-DATA_PATH ?= data/raw/UCI_Credit_Card.csv
+MODELS ?= log_reg random_forest catboost
+N_JOBS ?= -1
+DATA_PATH ?= data/processed/UCI_Credit_Card.csv
 
 #################################################################################
 # COMMANDS                                                                      #
@@ -70,10 +72,15 @@ create_environment:
 #################################################################################
 
 
-## Download credit scoring dataset using uv
+## Download, validate and clean the dataset into data/processed
 .PHONY: data
 data:
 	uv run python -m src.data.make_dataset
+
+## Validate and clean the existing raw dataset
+.PHONY: prepare-data
+prepare-data:
+	uv run python -m src.data.prepare_dataset
 
 ## Start the credit scoring API (localhost:8000 by default)
 .PHONY: run
@@ -105,8 +112,8 @@ mlflow-server: mlflow
 
 ## Train credit default model and log to local MLflow (override DATA_PATH if needed)
 .PHONY: train
-train:
-	uv run python -m src.models.train --data-path "$(DATA_PATH)"
+train: data
+	uv run python -m src.models.train --data-path "$(DATA_PATH)" --models $(MODELS) --n-jobs $(N_JOBS)
 
 
 #################################################################################

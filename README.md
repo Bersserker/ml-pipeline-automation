@@ -15,7 +15,7 @@ Default of Credit Card
 # Установить зависимости из pyproject.toml через uv
 uv sync
 
-# Скачать датасет (uv автоматически подготовит окружение)
+# Скачать, проверить и очистить датасет (uv подготовит окружение)
 make data
 
 # То же самое без Makefile
@@ -25,7 +25,20 @@ uv run python -m src.data.make_dataset
 Скрипт `src/data/make_dataset.py` загружает датасет
 `uciml/default-of-credit-card-clients-dataset` в `data/raw/UCI_Credit_Card.csv`.
 Если файл уже существует, повторная загрузка пропускается.
-Это загрузка исходных данных; обработка данных пока не реализована.
+Затем Pandera проверяет исходные данные, очистка удаляет одинаковые строки,
+приводит названия столбцов к нижнему регистру и переименовывает целевой столбец
+в `default`. Очищенные данные повторно проверяются и сохраняются в
+`data/processed/UCI_Credit_Card.csv`. Исходный файл остаётся неизменным.
+Пустой датасет, отсутствующие столбцы, пропуски и недопустимые значения
+останавливают подготовку; существующий обработанный файл при этом сохраняется.
+
+```bash
+make prepare-data  # Проверить и обработать уже загруженный raw
+# Или без Makefile:
+uv run python -m src.data.prepare_dataset
+# Повторить обработку через DVC при изменении исходных данных или кода:
+uv run dvc repro prepare
+```
 
 Зависимость `kagglehub` указана в `pyproject.toml`, версии фиксируются в `uv.lock`.
 Для установки зависимостей также можно использовать `make requirements`.
@@ -54,23 +67,52 @@ make mlflow
 Откройте http://127.0.0.1:5000. Сервер работает до нажатия `Ctrl+C`.
 База SQLite и артефакты сохраняются в `artifacts/mlflow/`.
 
-В другом терминале запустите обучение с логированием на этот сервер:
+Обучение сравнивает модели из `src/models/modeling`: `log_reg`, `random_forest`
+и `catboost`. Для каждой модели используется своя сетка параметров из
+`src/models/modeling/__init__.py`. `GridSearchCV` выбирает модель и параметры
+по средней accuracy на пяти стратифицированных фолдах. Препроцессинг обучается
+внутри каждого фолда; тестовая выборка используется только для итоговой оценки.
 
 ```bash
 make train
+make train MODELS="log_reg random_forest" N_JOBS=2
+make train MODELS=catboost
 ```
 
-Для другого порта используйте одинаковое значение в обоих терминалах:
+`make train` сначала выполняет загрузку и подготовку данных. Обучение читает
+`data/processed/UCI_Credit_Card.csv` и снова проверяет его перед построением
+признаков. Для обучения без повторной подготовки:
 
 ```bash
-make mlflow MLFLOW_PORT=5001
-make train MLFLOW_PORT=5001
+uv run python -m src.models.train --models log_reg --n-jobs 2
 ```
 
-Для уже запущенного удалённого сервера:
+`DATA_PATH` и аргумент `--data-path` позволяют выбрать другой CSV с очищенными
+данными, соответствующими схеме `PROCESSED_SCHEMA`.
 
-```bash
-make train MLFLOW_TRACKING_URI=http://your-server:5000
+Лучшая модель переобучается на всей обучающей выборке и регистрируется как
+`CreditDefaultModel` в локальной базе `artifacts/mlflow/mlflow.db`.
+MLflow сохраняет выбранную модель, параметры, таблицу результатов CV и тестовые
+метрики. Для LogisticRegression и RandomForest используется `skops`,
+для CatBoost — `cloudpickle`. Загружайте только доверенные артефакты моделей.
+
+Через Python можно передать собственные сетки:
+
+```python
+from src.models.train import train
+import pandas as pd
+
+df = pd.read_csv("data/processed/UCI_Credit_Card.csv")
+
+pipeline, metrics = train(
+    df,
+    models=["log_reg", "random_forest"],
+    param_grid={
+        "log_reg": {"C": [0.1, 1.0]},
+        "random_forest": {"n_estimators": [50, 100], "max_depth": [5, 10]},
+    },
+    n_jobs=2,
+)
 ```
 
 ## Project Organization

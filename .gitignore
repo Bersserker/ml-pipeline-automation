@@ -1,5 +1,7 @@
 # Data
-/data/
+/data/*
+!/data/*.dvc
+!/data/.gitignore
 
 # Local MLflow database and artifacts
 /artifacts/mlflow/
