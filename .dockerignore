@@ -7,3 +7,11 @@ __pycache__
 .ruff_cache
 data
 models
+.uv-cache
+artifacts
+.aws
+.codex
+.agents
+.dvc/cache
+notebooks
+reports

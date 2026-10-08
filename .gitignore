@@ -6,6 +6,11 @@
 # Local MLflow database and artifacts
 /artifacts/mlflow/
 
+# Generated model and drift monitoring artifacts
+/models/*.joblib
+/models/*_reference.csv
+/reports/drift.json
+
 # Mac OS-specific storage files
 .DS_Store
 

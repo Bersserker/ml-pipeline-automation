@@ -1,3 +1,4 @@
+import joblib
 import mlflow
 import numpy as np
 import pandas as pd
@@ -45,6 +46,8 @@ def test_search_covers_grid_and_refits_pipeline():
 )
 def test_full_grid_mlflow_round_trip(tmp_path, monkeypatch, model, grid):
     monkeypatch.setattr(training, "MLFLOW_DIR", tmp_path / "mlflow")
+    model_path = tmp_path / "models" / "best_model.joblib"
+    monkeypatch.setattr(training, "BEST_MODEL_PATH", model_path)
     raw = pd.read_csv("data/raw/UCI_Credit_Card.csv").sample(n=200, random_state=42)
     processed = clean_dataset(raw)
     pipeline, metrics = training.train(
@@ -71,6 +74,18 @@ def test_full_grid_mlflow_round_trip(tmp_path, monkeypatch, model, grid):
     np.testing.assert_array_equal(loaded.predict(features), pipeline.predict(features))
     np.testing.assert_allclose(
         loaded.predict_proba(features), pipeline.predict_proba(features)
+    )
+    saved = joblib.load(model_path)
+    reference = pd.read_csv(model_path.parent / "train_reference.csv")
+    held_out = pd.read_csv(model_path.parent / "test_reference.csv")
+    assert len(reference) == 160
+    assert len(held_out) == 40
+    assert set(reference["id"]).isdisjoint(held_out["id"])
+    assert set(reference["id"]) | set(held_out["id"]) == set(processed["id"])
+    assert isinstance(saved, Pipeline)
+    np.testing.assert_array_equal(saved.predict(features), pipeline.predict(features))
+    np.testing.assert_allclose(
+        saved.predict_proba(features), pipeline.predict_proba(features)
     )
 
 

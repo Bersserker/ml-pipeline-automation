@@ -1,8 +1,10 @@
 """Train and register the credit default model with MLflow."""
 
 import argparse
+import os
 from pathlib import Path
 
+import joblib
 import mlflow
 from mlflow.models import ModelSignature
 import mlflow.sklearn
@@ -25,7 +27,12 @@ from src.features.build_features import build_features
 from src.models.modeling import MODEL_NAMES
 from src.models.pipeline import create_pipeline
 
-MLFLOW_DIR = Path(__file__).resolve().parents[2] / "artifacts" / "mlflow"
+MLFLOW_DIR = Path(
+    os.environ.get(
+        "MLFLOW_DIR", Path(__file__).resolve().parents[2] / "artifacts" / "mlflow"
+    )
+).resolve()
+BEST_MODEL_PATH = Path(__file__).resolve().parents[2] / "models" / "best_model.joblib"
 EXPERIMENT_NAME = "credit-default"
 
 NUMERIC_FEATURES = (
@@ -52,6 +59,7 @@ CATEGORICAL_FEATURES = [
 def train(df: pd.DataFrame, *, models=None, param_grid=None, n_jobs=-1):
     """Validate processed credit data, train, and return the pipeline and metrics."""
     df = PROCESSED_SCHEMA.validate(df, lazy=True)
+    reference_data = df.copy()
     models = list(MODEL_NAMES if models is None else models)
     search = create_pipeline(
         NUMERIC_FEATURES, CATEGORICAL_FEATURES, param_grid, models=models, n_jobs=n_jobs
@@ -162,6 +170,16 @@ def train(df: pd.DataFrame, *, models=None, param_grid=None, n_jobs=-1):
             ),
             skops_trusted_types=["numpy.dtype", "sklearn.tree._tree.Tree"],
         )
+
+    BEST_MODEL_PATH.parent.mkdir(parents=True, exist_ok=True)
+    joblib.dump(pipeline, BEST_MODEL_PATH)
+    reference_data.loc[X_train.index].to_csv(
+        BEST_MODEL_PATH.parent / "train_reference.csv", index=False
+    )
+    reference_data.loc[X_test.index].to_csv(
+        BEST_MODEL_PATH.parent / "test_reference.csv", index=False
+    )
+    print(f"Best model saved to: {BEST_MODEL_PATH}")
 
     return pipeline, metrics
 
